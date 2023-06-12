@@ -124,6 +124,7 @@ class BrowserWindow(QMainWindow):
             from_act = "[undefined]"
         if from_act == "action_busy":
             self.voice_input_output.appendPlainText("")
+            self.voice_input_output.appendPlainText("")
         self.voice_input_output.appendPlainText(f"[{dt_string}][{from_act}] - {message}")
 
     def execute_file(self, file_way):
