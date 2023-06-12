@@ -1,0 +1,5 @@
+module 'sounddevice' has no attribute 'start'
+Traceback (most recent call last):
+  File "C:\Users\sfped\PycharmProjects\pythonProject\main.py", line 17, in toggle_mute
+    sd.start(callback=None)
+AttributeError: module 'sounddevice' has no attribute 'start'

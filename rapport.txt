@@ -1,0 +1,71 @@
+Commande entendue : allô
+Commande reconnue : allô
+Actions exécutées : C:\audio\1.wav,pause : 32
+Commande reconnue : allô
+Actions exécutées : C:\audio\1.wav,pause : 32
+Commande entendue : allô
+Commande reconnue : allô
+Actions exécutées : C:\audio\1.wav,pause : 32
+Commande reconnue : allô
+Actions exécutées : C:\audio\1.wav,pause : 32
+Commande entendue : merci
+Commande reconnue : merci
+Actions exécutées : C:\audio\2.wav,pause : 21
+Commande reconnue : merci
+Actions exécutées : C:\audio\2.wav,pause : 21
+Commande entendue : une année c'est très bien
+Commande reconnue : une année
+Actions exécutées : C:\audio\3.wav,pause : 30
+Commande reconnue : une année
+Actions exécutées : C:\audio\3.wav,pause : 30
+Commande entendue : par mail c'est très bien
+Commande reconnue : par mail
+Actions exécutées : C:\audio\4.wav,pause : 17
+Commande reconnue : par mail
+Actions exécutées : C:\audio\4.wav,pause : 17
+Commande entendue : allô
+Commande reconnue : allô
+Actions exécutées : C:\audio\1.wav,pause : 32
+Commande reconnue : allô
+Actions exécutées : C:\audio\1.wav,pause : 32
+Commande entendue : voilà
+Aucune action correspondante n'a été trouvée.
+Commande entendue : merci beaucoup
+Commande reconnue : merci
+Actions exécutées : C:\audio\2.wav,pause : 21
+Commande reconnue : merci
+Actions exécutées : C:\audio\2.wav,pause : 21
+Commande entendue : aucune énergie bonjour
+Aucune action correspondante n'a été trouvée.
+Commande entendue : bonjour annick je verrai bien disponible pour
+Aucune action correspondante n'a été trouvée.
+Commande entendue : oui allô
+Commande reconnue : allô
+Actions exécutées : C:\audio\1.wav,pause : 32
+Commande reconnue : allô
+Actions exécutées : C:\audio\1.wav,pause : 32
+Commande entendue : messagerie orange bonjour la personne que vous essayez de joindre n'est pas disponible
+Aucune action correspondante n'a été trouvée.
+Commande entendue : le jardin des 4 saisons
+Aucune action correspondante n'a été trouvée.
+Commande entendue : bonjour merci de faire message je vous rappellerai au plus vite
+Commande reconnue : merci
+Actions exécutées : C:\audio\2.wav,pause : 21
+Commande reconnue : merci
+Actions exécutées : C:\audio\2.wav,pause : 21
+Commande entendue : bonjour allô
+Commande reconnue : allô
+Actions exécutées : C:\audio\1.wav,pause : 32
+Commande reconnue : allô
+Actions exécutées : C:\audio\1.wav,pause : 32
+Commande entendue : il est pas disponible pour le moment merci de laisser un message après le bip
+Commande reconnue : merci
+Actions exécutées : C:\audio\2.wav,pause : 21
+Commande reconnue : merci
+Actions exécutées : C:\audio\2.wav,pause : 21
+Commande entendue : allô
+Commande reconnue : allô
+Actions exécutées : C:\audio\1.wav,pause : 32
+Commande reconnue : allô
+Actions exécutées : C:\audio\1.wav,pause : 32
+Commande entendue : bonjour vous êtes bien sur la messagerie de david leia aux puces marseille
