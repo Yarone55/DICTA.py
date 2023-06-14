@@ -214,9 +214,7 @@ class BrowserWindow(QMainWindow):
         self.button_action_not_interested.clicked.connect(self.action_not_interested)
         self.button_action_not_interested.setShortcut("/")
 
-        self.button_action_presentation = QPushButton("Présentation")
-        self.button_action_presentation.clicked.connect(self.action_presentation)
-        self.button_action_presentation.setShortcut("1")
+
         # layout.addWidget(self.execute_file_button)
 
     def action_not_interested(self):
@@ -277,47 +275,44 @@ class BrowserWindow(QMainWindow):
         file_buttons_layout.addWidget(self.button_action_not_interested)
 
         actions_buttons_layout = QHBoxLayout()
-        self.button_action_presentation = QPushButton("Présentation")
-        self.button_action_presentation.clicked.connect(self.action_presentation)
-        self.button_action_presentation.setShortcut("1")
-        actions_buttons_layout.addWidget(self.button_action_presentation)
 
-        self.button_action_non_renew = QPushButton("Non renouvelable")
-        self.button_action_non_renew.clicked.connect(self.action_non_renew)
-        self.button_action_non_renew.setShortcut("2")
-        actions_buttons_layout.addWidget(self.button_action_non_renew)
 
-        self.execute_file_button_3 = QPushButton("@@@")
-        self.execute_file_button_3.clicked.connect(self.execute_file_3)
-        self.execute_file_button_3.setShortcut("3")
-        actions_buttons_layout.addWidget(self.execute_file_button_3)
+
+
+
 
         self.execute_file_button_4 = QPushButton("bubu")
         self.execute_file_button_4.clicked.connect(self.execute_file_4)
-        self.execute_file_button_4.setShortcut("4")
+        self.execute_file_button_4.setShortcut("R")
         actions_buttons_layout.addWidget(self.execute_file_button_4)
 
-        self.execute_file_button_9 = QPushButton("ER")
+
+        self.execute_file_button_9 = QPushButton("presentation")
         self.execute_file_button_9.clicked.connect(self.execute_file_9)
-        self.execute_file_button_9.setShortcut("7")
+        self.execute_file_button_9.setShortcut("1")
         actions_buttons_layout.addWidget(self.execute_file_button_9)
 
-        self.execute_file_button_8 = QPushButton("€€€")
-        self.execute_file_button_8.clicked.connect(self.execute_file_8)
-        self.execute_file_button_8.setShortcut("4")
-        actions_buttons_layout.addWidget(self.execute_file_button_8)
+        self.execute_file_button_10 = QPushButton("non renouve")
+        self.execute_file_button_10.clicked.connect(self.execute_file_10)
+        self.execute_file_button_10.setShortcut("2")
+        actions_buttons_layout.addWidget(self.execute_file_button_10)
 
+        self.execute_file_button_11 = QPushButton("bonne")
+        self.execute_file_button_11.clicked.connect(self.execute_file_11)
+        self.execute_file_button_11.setShortcut("3")
+        actions_buttons_layout.addWidget(self.execute_file_button_11)
 
-
+        self.execute_file_button_12 = QPushButton("argent")
+        self.execute_file_button_12.clicked.connect(self.execute_file_12)
+        self.execute_file_button_12.setShortcut("4")
+        actions_buttons_layout.addWidget(self.execute_file_button_12)
         self.button_action_next_call = QPushButton("Appel suivant")
         self.button_action_next_call.clicked.connect(self.action_next_dial)
         self.button_action_next_call.setShortcut(".")
         actions_buttons_layout.addWidget(self.button_action_next_call)
-
         main_widget = QWidget()
         main_widget.setLayout(layout)
         self.setCentralWidget(main_widget)
-
         layout.addLayout(address_layout)
         layout.addWidget(self.web_view)
         layout.addLayout(search_layout)
@@ -327,9 +322,7 @@ class BrowserWindow(QMainWindow):
         layout.addWidget(self.voice_input_output)
         layout.addLayout(file_buttons_layout)
         layout.addLayout(actions_buttons_layout)
-
         main_widget.setLayout(layout)
-
     def on_keyboard_press(self, key):
         self.logger_trace_log(f"Key Pressed: {key}", "on_keyboard_press")
 
@@ -467,107 +460,13 @@ class BrowserWindow(QMainWindow):
         mute_shortcut = QShortcut(QKeySequence(Qt.Key_0), self)  # Remplacer Qt.Key_M par Qt.Key_0
         mute_shortcut.activated.connect(self.toggle_microphone_mute)
 
-    def action_presentation(self):
-        file_path = r"C:\audio\1.wav"  # Mettez à jour le chemin du fichier en conséquence
-        if self.execute_file(file_path):
-            self.logger_trace_log(f"Action => Présentation", "action_presentation")
-            if self.last_button_used:
-                self.last_button_used.setStyleSheet("")
-            self.last_button_used = self.button_action_presentation
-            self.last_button_used.setStyleSheet("background-color: red;")
-            # Exécuter le fichier audio
-            threading.Thread(target=execute_audio_file, args=(file_path,)).start()
-            # Démarrer le compte à rebours après une courte pause
-            QTimer.singleShot(600, self.start_countdown)
-        else:
-            self.logger_trace_log(f"Action => Présentation (Error)", "action_presentation")
 
-    def start_countdown(self):
-        # Lancer le compte à rebours
-        self.countdown_timer = QTimer()
-        self.countdown_timer.timeout.connect(self.update_countdown)
-        self.remaining_time = 33  # Durée du compte à rebours en secondes
-        self.update_countdown()  # Mettre à jour le label dès le début
-        self.countdown_timer.start(1000)  # Mettre à jour le label toutes les secondes
 
-    def update_countdown(self):
-        self.remaining_time -= 1
-        if self.remaining_time >= 0:
-            current_time = datetime.datetime.now().strftime("%H:%M:%S")
-            current_date = datetime.datetime.now().strftime("%Y-%m-%d")
-            self.voice_label.setText(
-                f"Countdown: {self.remaining_time} second(s) - Time: {current_time}, Date: {current_date}")
-        else:
-            self.voice_label.setText("Countdown finished")
-            self.countdown_timer.stop()
 
-    def action_non_renew(self):
-        file_path = r"C:\audio\2.wav"  # Mettez à jour le chemin du fichier en conséquence
-        if self.execute_file(file_path):
-            self.logger_trace_log("Action => Non renouvelable", "action_non_renew")
-            if self.last_button_used:
-                self.last_button_used.setStyleSheet("")
-            self.last_button_used = self.button_action_non_renew
-            self.last_button_used.setStyleSheet("background-color: orange;")
-            # Exécuter le fichier audio
-            threading.Thread(target=execute_audio_file, args=(file_path,)).start()
-            # Démarrer le compte à rebours après une courte pause
-            QTimer.singleShot(600, self.start_countdown_2)
-        else:
-            self.logger_trace_log("Action => Non renouvelable (Error)", "action_non_renew")
 
-    def update_countdown_2(self):
-        self.remaining_time -= 1
-        if self.remaining_time >= 0:
-            current_time = datetime.datetime.now().strftime("%H:%M:%S")
-            current_date = datetime.datetime.now().strftime("%Y-%m-%d")
-            self.voice_label.setText(
-                f"Countdown: {self.remaining_time} second(s) - Time: {current_time}, Date: {current_date}")
-        else:
-            self.voice_label.setText("Countdown finished")
-            self.countdown_timer.stop()
 
-    def start_countdown_2(self):
-        # Lancer le compte à rebours
-        self.countdown_timer = QTimer()
-        self.countdown_timer.timeout.connect(self.update_countdown_2)
-        self.remaining_time = 29  # Durée du compte à rebours en secondes
-        self.update_countdown_2()  # Mettre à jour le label dès le début
-        self.countdown_timer.start(1000)  # Mettre à jour le label toutes les secondes
 
-    def execute_file_3(self):
-        file_path = r"C:\audio\3.wav"  # Mettez à jour le chemin du fichier en conséquence
-        if self.execute_file(file_path):
-            self.logger_trace_log(f"Action => @@@", "execute_file_3")
-            if self.last_button_used:
-                self.last_button_used.setStyleSheet("")
-            self.last_button_used = self.execute_file_button_3
-            self.last_button_used.setStyleSheet("background-color: green;")
-            # Exécuter le fichier audio
-            threading.Thread(target=execute_audio_file, args=(file_path,)).start()
-            # Démarrer le compte à rebours après une courte pause
-            QTimer.singleShot(600, self.start_countdown_3)
-        else:
-            self.logger_trace_log(f"Action => @@@ (Error)", "execute_file_3")
 
-    def update_countdown_3(self):
-        self.remaining_time -= 1
-        if self.remaining_time >= 0:
-            current_time = datetime.datetime.now().strftime("%H:%M:%S")
-            current_date = datetime.datetime.now().strftime("%Y-%m-%d")
-            self.voice_label.setText(
-                f"Countdown: {self.remaining_time} second(s) - Time: {current_time}, Date: {current_date}")
-        else:
-            self.voice_label.setText("Countdown finished")
-            self.countdown_timer.stop()
-
-    def start_countdown_3(self):
-        # Lancer le compte à rebours
-        self.countdown_timer = QTimer()
-        self.countdown_timer.timeout.connect(self.update_countdown_3)
-        self.remaining_time = 31  # Durée du compte à rebours en secondes
-        self.update_countdown_2()  # Mettre à jour le label dès le début
-        self.countdown_timer.start(1000)  # Mettre à jour le label toutes les secondes
     def execute_file_4(self):
         self.logger_trace_log("Action => Occupé", "action_busy")
 
@@ -587,46 +486,14 @@ class BrowserWindow(QMainWindow):
         self.gif_url_input.setText("https://vicibox-001.vicibox.avalon-informatique.fr/agc/images/agc_live_call_ON.gif")
         self.start_gif_search()
 
-    def execute_file_8(self):
-        file_path = r"C:\audio\4.wav"  # Mettez à jour le chemin du fichier en conséquence
-        if self.execute_file(file_path):
-            self.logger_trace_log(f"Action => €€€", "execute_file_8")
-            if self.last_button_used:
-                self.last_button_used.setStyleSheet("")
-            self.last_button_used = self.execute_file_button_8
-            self.last_button_used.setStyleSheet("background-color: blue;")
-            # Exécuter le fichier audio
-            threading.Thread(target=execute_audio_file, args=(file_path,)).start()
-            # Démarrer le compte à rebours après une courte pause
-            QTimer.singleShot(600, self.start_countdown_8)
-        else:
-            self.logger_trace_log(f"Action => €€€ (error)", "execute_file_8")
-
-    def update_countdown_8(self):
-        self.remaining_time -= 1
-        if self.remaining_time >= 0:
-            current_time = datetime.datetime.now().strftime("%H:%M:%S")
-            current_date = datetime.datetime.now().strftime("%Y-%m-%d")
-            self.voice_label.setText(
-                f"Countdown: {self.remaining_time} second(s) - Time: {current_time}, Date: {current_date}")
-        else:
-            self.voice_label.setText("Countdown finished")
-            self.countdown_timer.stop()
-
-    def start_countdown_8(self):
-        # Lancer le compte à rebours
-        self.countdown_timer = QTimer()
-        self.countdown_timer.timeout.connect(self.update_countdown_3)
-        self.remaining_time = 24  # Durée du compte à rebours en secondes
-        self.update_countdown_2()  # Mettre à jour le label dès le début
-        self.countdown_timer.start(1000)  # Mettre à jour le label toutes les secondes
 
     def execute_file_9(self):
         self.logger_trace_log(f"Action => ER", "execute_file_9")
+        if self.last_button_used:
+            self.last_button_used.setStyleSheet("")
         self.last_button_used = self.execute_file_button_9
         self.last_button_used.setStyleSheet("background-color: blue;")
         QTimer.singleShot(600, self.start_countdown_9)
-
 
     def update_countdown_9(self):
         self.remaining_time -= 1
@@ -642,10 +509,99 @@ class BrowserWindow(QMainWindow):
     def start_countdown_9(self):
         # Lancer le compte à rebours
         self.countdown_timer = QTimer()
-        self.countdown_timer.timeout.connect(self.update_countdown_3)
+        self.countdown_timer.timeout.connect(self.update_countdown_9)
         self.remaining_time = 24  # Durée du compte à rebours en secondes
-        self.update_countdown_2()  # Mettre à jour le label dès le début
+        self.update_countdown_9()  # Mettre à jour le label dès le début
         self.countdown_timer.start(1000)  # Mettre à jour le label toutes les secondes
+        keyboard.press("a")  # Simulation de la pression de la touche "A"
+        keyboard.release("a")  # Relâchement de la touche "A"
+    def execute_file_10(self):
+        self.logger_trace_log(f"Action => ER", "execute_file_10")
+        if self.last_button_used:
+            self.last_button_used.setStyleSheet("")
+        self.last_button_used = self.execute_file_button_10
+        self.last_button_used.setStyleSheet("background-color: blue;")
+        QTimer.singleShot(600, self.start_countdown_10)
+
+    def update_countdown_10(self):
+        self.remaining_time -= 1
+        if self.remaining_time >= 0:
+            current_time = datetime.datetime.now().strftime("%H:%M:%S")
+            current_date = datetime.datetime.now().strftime("%Y-%m-%d")
+            self.voice_label.setText(
+                f"Countdown: {self.remaining_time} second(s) - Time: {current_time}, Date: {current_date}")
+        else:
+            self.voice_label.setText("Countdown finished")
+            self.countdown_timer.stop()
+
+    def start_countdown_10(self):
+        # Lancer le compte à rebours
+        self.countdown_timer = QTimer()
+        self.countdown_timer.timeout.connect(self.update_countdown_10)
+        self.remaining_time = 24  # Durée du compte à rebours en secondes
+        self.update_countdown_10()  # Mettre à jour le label dès le début
+        self.countdown_timer.start(1000)  # Mettre à jour le label toutes les secondes
+        keyboard.press("b")  # Simulation de la pression de la touche "A"
+        keyboard.release("b")  # Relâchement de la touche "A"
+    def execute_file_11(self):
+        self.logger_trace_log(f"Action => ER", "execute_file_11")
+        if self.last_button_used:
+            self.last_button_used.setStyleSheet("")
+        self.last_button_used = self.execute_file_button_11
+        self.last_button_used.setStyleSheet("background-color: blue;")
+        QTimer.singleShot(600, self.start_countdown_11)
+
+    def update_countdown_11(self):
+        self.remaining_time -= 1
+        if self.remaining_time >= 0:
+            current_time = datetime.datetime.now().strftime("%H:%M:%S")
+            current_date = datetime.datetime.now().strftime("%Y-%m-%d")
+            self.voice_label.setText(
+                f"Countdown: {self.remaining_time} second(s) - Time: {current_time}, Date: {current_date}")
+        else:
+            self.voice_label.setText("Countdown finished")
+            self.countdown_timer.stop()
+    def start_countdown_11(self):
+        # Lancer le compte à rebours
+        self.countdown_timer = QTimer()
+        self.countdown_timer.timeout.connect(self.update_countdown_11)
+        self.remaining_time = 24  # Durée du compte à rebours en secondes
+        self.update_countdown_10()  # Mettre à jour le label dès le début
+        self.countdown_timer.start(1000)  # Mettre à jour le label toutes les secondes
+        keyboard.press("3")  # Simulation de la pression de la touche "A"
+        keyboard.release("3")  # Relâchement de la touche "A"
+
+
+
+    def execute_file_12(self):
+        self.logger_trace_log(f"Action => ER", "execute_file_12")
+        if self.last_button_used:
+            self.last_button_used.setStyleSheet("")
+        self.last_button_used = self.execute_file_button_12
+        self.last_button_used.setStyleSheet("background-color: blue;")
+        QTimer.singleShot(600, self.start_countdown_12)
+
+    def update_countdown_12(self):
+        self.remaining_time -= 1
+        if self.remaining_time >= 0:
+            current_time = datetime.datetime.now().strftime("%H:%M:%S")
+            current_date = datetime.datetime.now().strftime("%Y-%m-%d")
+            self.voice_label.setText(
+                f"Countdown: {self.remaining_time} second(s) - Time: {current_time}, Date: {current_date}")
+        else:
+            self.voice_label.setText("Countdown finished")
+            self.countdown_timer.stop()
+
+    def start_countdown_12(self):
+        # Lancer le compte à rebours
+        self.countdown_timer = QTimer()
+        self.countdown_timer.timeout.connect(self.update_countdown_12)
+        self.remaining_time = 24  # Durée du compte à rebours en secondes
+        self.update_countdown_12()  # Mettre à jour le label dès le début
+        self.countdown_timer.start(1000)  # Mettre à jour le label toutes les secondes
+        keyboard.press("4")  # Simulation de la pression de la touche "A"
+        keyboard.release("4")  # Relâchement de la touche "A"
+
     def action_next_dial(self):
         self.logger_trace_log("Action => Apple suivant", "action_next_dial")
         self.web_view.page().runJavaScript(f"""
@@ -832,6 +788,7 @@ class BrowserWindow(QMainWindow):
 
         if result == QMessageBox.Yes:
             event.accept()
+
 
 
 if __name__ == "__main__":
