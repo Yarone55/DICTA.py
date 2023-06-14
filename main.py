@@ -622,9 +622,10 @@ class BrowserWindow(QMainWindow):
         self.countdown_timer.start(1000)  # Mettre à jour le label toutes les secondes
 
     def execute_file_9(self):
-            self.last_button_used = self.execute_file_button_9
-            self.last_button_used.setStyleSheet("background-color: blue;")
-            QTimer.singleShot(600, self.start_countdown_9)
+        self.logger_trace_log(f"Action => ER", "execute_file_9")
+        self.last_button_used = self.execute_file_button_9
+        self.last_button_used.setStyleSheet("background-color: blue;")
+        QTimer.singleShot(600, self.start_countdown_9)
 
 
     def update_countdown_9(self):
