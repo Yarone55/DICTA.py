@@ -122,9 +122,6 @@ class BrowserWindow(QMainWindow):
         dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
         if from_act == "":
             from_act = "[undefined]"
-        if from_act == "action_busy":
-            self.voice_input_output.appendPlainText("")
-            self.voice_input_output.appendPlainText("")
         self.voice_input_output.appendPlainText(f"[{dt_string}][{from_act}] - {message}")
 
     def execute_file(self, file_way):
@@ -295,10 +292,22 @@ class BrowserWindow(QMainWindow):
         self.execute_file_button_3.setShortcut("3")
         actions_buttons_layout.addWidget(self.execute_file_button_3)
 
+        self.execute_file_button_4 = QPushButton("bubu")
+        self.execute_file_button_4.clicked.connect(self.execute_file_4)
+        self.execute_file_button_4.setShortcut("4")
+        actions_buttons_layout.addWidget(self.execute_file_button_4)
+
+        self.execute_file_button_9 = QPushButton("ER")
+        self.execute_file_button_9.clicked.connect(self.execute_file_9)
+        self.execute_file_button_9.setShortcut("7")
+        actions_buttons_layout.addWidget(self.execute_file_button_9)
+
         self.execute_file_button_8 = QPushButton("€€€")
         self.execute_file_button_8.clicked.connect(self.execute_file_8)
         self.execute_file_button_8.setShortcut("4")
         actions_buttons_layout.addWidget(self.execute_file_button_8)
+
+
 
         self.button_action_next_call = QPushButton("Appel suivant")
         self.button_action_next_call.clicked.connect(self.action_next_dial)
@@ -559,6 +568,24 @@ class BrowserWindow(QMainWindow):
         self.remaining_time = 31  # Durée du compte à rebours en secondes
         self.update_countdown_2()  # Mettre à jour le label dès le début
         self.countdown_timer.start(1000)  # Mettre à jour le label toutes les secondes
+    def execute_file_4(self):
+        self.logger_trace_log("Action => Occupé", "action_busy")
+
+        self.web_view.page().runJavaScript("""
+                      hangup_customer_button_click('','','','','YES');
+                  """)
+        time.sleep(1)  # Pause de 2 secondes
+        self.web_view.page().runJavaScript("""
+                              DispoSelectContent_create('B','ADD','YES');
+                          """)
+        time.sleep(1)  # Pause de 1 seconde
+        self.web_view.page().runJavaScript("""
+                      DispoSelect_submit('','','YES');
+                  """)
+        self.search_gif_button.setEnabled(False)
+        self.stop_gif_button.setEnabled(True)
+        self.gif_url_input.setText("https://vicibox-001.vicibox.avalon-informatique.fr/agc/images/agc_live_call_ON.gif")
+        self.start_gif_search()
 
     def execute_file_8(self):
         file_path = r"C:\audio\4.wav"  # Mettez à jour le chemin du fichier en conséquence
@@ -594,6 +621,30 @@ class BrowserWindow(QMainWindow):
         self.update_countdown_2()  # Mettre à jour le label dès le début
         self.countdown_timer.start(1000)  # Mettre à jour le label toutes les secondes
 
+    def execute_file_9(self):
+            self.last_button_used = self.execute_file_button_9
+            self.last_button_used.setStyleSheet("background-color: blue;")
+            QTimer.singleShot(600, self.start_countdown_9)
+
+
+    def update_countdown_9(self):
+        self.remaining_time -= 1
+        if self.remaining_time >= 0:
+            current_time = datetime.datetime.now().strftime("%H:%M:%S")
+            current_date = datetime.datetime.now().strftime("%Y-%m-%d")
+            self.voice_label.setText(
+                f"Countdown: {self.remaining_time} second(s) - Time: {current_time}, Date: {current_date}")
+        else:
+            self.voice_label.setText("Countdown finished")
+            self.countdown_timer.stop()
+
+    def start_countdown_9(self):
+        # Lancer le compte à rebours
+        self.countdown_timer = QTimer()
+        self.countdown_timer.timeout.connect(self.update_countdown_3)
+        self.remaining_time = 24  # Durée du compte à rebours en secondes
+        self.update_countdown_2()  # Mettre à jour le label dès le début
+        self.countdown_timer.start(1000)  # Mettre à jour le label toutes les secondes
     def action_next_dial(self):
         self.logger_trace_log("Action => Apple suivant", "action_next_dial")
         self.web_view.page().runJavaScript(f"""
@@ -722,6 +773,8 @@ class BrowserWindow(QMainWindow):
                             self.action_non_renew()
                         elif action.startswith("Non renouvelable"):
                             self.execute_file_3()
+                        elif action.startswith("bubu"):
+                            self.execute_file_4()
                         else:
                             subprocess.run(action, shell=True)
                     action_executed = True
