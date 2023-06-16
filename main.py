@@ -1,6 +1,7 @@
 import sys
 import os
-
+from pynput.mouse import Controller, Button
+from PyQt5 import QtCore
 import numpy as np
 from PyQt5.QtCore import Qt, QUrl, QTimer, pyqtSlot, pyqtSignal
 from PyQt5.QtGui import QIcon, QImage, QPixmap, QColor, QKeySequence
@@ -80,40 +81,29 @@ class BrowserWindow(QMainWindow):
         self.open_file_buttons = []
         self.open_file_paths = []
         self.open_file_signals = []
-
         self.initialize_web_view()
         self.initialize_address_bar()
         self.initialize_navigation_buttons()
-
         self.initialize_search_gif_widgets()
         # self.initialize_console_output()
         self.initialize_gif_indicator()
-        self.pause_system_button = QPushButton("Pause System")
-        self.pause_system_button.clicked.connect(self.pause_system)
         self.initialize_browse_audio_button()
         self.initialize_load_commands_button()
         self.initialize_voice_command_widgets()
-
         self.audio_file_path = ""
         self.audio_player = QSoundEffect()
-
         self.gif_timer = QTimer()
         self.gif_timer.timeout.connect(self.search_gif)
-
         self.listener = sr.Recognizer()
         self.audio_file_path = ""
         self.audio_player = QSoundEffect()
-
         self.populate_microphone_combo()
-
         self.custom_commands = {}
-
         self.command_list_dialog = QDialog(self)
         self.command_list_dialog.setWindowTitle("Loaded Commands")
         self.command_list_dialog.setModal(True)
         self.command_list_dialog_layout = QVBoxLayout()
         self.command_list_dialog.setLayout(self.command_list_dialog_layout)
-
         self.setup_layout()
         self.setup_shortcuts()
 
@@ -215,42 +205,17 @@ class BrowserWindow(QMainWindow):
         self.button_action_not_interested.setShortcut("/")
 
 
-        # layout.addWidget(self.execute_file_button)
-
-    def action_not_interested(self):
-        self.web_view.page().runJavaScript("""
-              hangup_customer_button_click('','','','','YES');
-          """)
-        time.sleep(2)  # Pause de 2 secondes
-        self.web_view.page().runJavaScript("""
-              DispoSelectContent_create('NI','ADD','YES');
-          """)
-        time.sleep(1)  # Pause de 1 seconde
-        self.web_view.page().runJavaScript("""
-              DispoSelect_submit('','','YES');
-          """)
-        self.logger_trace_log("Action => Pas intéressé", "action_not_interested")
-        self.search_gif_button.setEnabled(False)
-        self.stop_gif_button.setEnabled(True)
-        self.gif_url_input.setText("https://vicibox-001.vicibox.avalon-informatique.fr/agc/images/agc_live_call_ON.gif")
-        self.start_gif_search()
 
     def setup_layout(self):
         layout = QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.voice_label)
         address_layout = QHBoxLayout()
-        address_layout.addWidget(self.back_button)
-        address_layout.addWidget(self.forward_button)
-        address_layout.addWidget(self.address_bar)
-        layout.addWidget(self.pause_system_button)
-
         search_layout = QHBoxLayout()
         search_layout.addWidget(QLabel("Set GIF URL:"))
         search_layout.addWidget(self.gif_url_input)
         search_layout.addWidget(self.search_gif_button)
         search_layout.addWidget(self.stop_gif_button)
-
         voice_layout = QHBoxLayout()
         voice_layout.addWidget(self.voice_button)
         voice_layout.addWidget(self.voice_stop_button)
@@ -258,14 +223,7 @@ class BrowserWindow(QMainWindow):
         voice_layout.addWidget(self.voice_label)
         voice_layout.addWidget(self.mute_microphone_button)
         voice_layout.addWidget(self.microphone_combo2)  # Ajout du deuxième tableau déroulant
-
         command_layout = QHBoxLayout()
-        command_layout.addWidget(QLabel("Command:"))
-        command_layout.addWidget(self.command_entry)
-        command_layout.addWidget(QLabel("Action:"))
-        command_layout.addWidget(self.action_entry)
-        command_layout.addWidget(self.create_command_button)
-
         file_buttons_layout = QHBoxLayout()
         file_buttons_layout.addWidget(self.browse_audio_button)
         file_buttons_layout.addWidget(self.load_commands_button)
@@ -273,23 +231,16 @@ class BrowserWindow(QMainWindow):
         file_buttons_layout.addWidget(self.button_action_busy)
         file_buttons_layout.addWidget(self.button_action_sale)
         file_buttons_layout.addWidget(self.button_action_not_interested)
-
         actions_buttons_layout = QHBoxLayout()
-
-
-
-
-
 
         self.execute_file_button_4 = QPushButton("bubu")
         self.execute_file_button_4.clicked.connect(self.execute_file_4)
         self.execute_file_button_4.setShortcut("R")
         actions_buttons_layout.addWidget(self.execute_file_button_4)
 
-
         self.execute_file_button_9 = QPushButton("presentation")
         self.execute_file_button_9.clicked.connect(self.execute_file_9)
-        self.execute_file_button_9.setShortcut("1")
+        self.execute_file_button_9.setShortcut("a")
         actions_buttons_layout.addWidget(self.execute_file_button_9)
 
         self.execute_file_button_10 = QPushButton("non renouve")
@@ -306,12 +257,15 @@ class BrowserWindow(QMainWindow):
         self.execute_file_button_12.clicked.connect(self.execute_file_12)
         self.execute_file_button_12.setShortcut("4")
         actions_buttons_layout.addWidget(self.execute_file_button_12)
+
         self.button_action_next_call = QPushButton("Appel suivant")
         self.button_action_next_call.clicked.connect(self.action_next_dial)
-        self.button_action_next_call.setShortcut(".")
+        self.button_action_next_call.setShortcut("f5")
         actions_buttons_layout.addWidget(self.button_action_next_call)
+
         main_widget = QWidget()
         main_widget.setLayout(layout)
+
         self.setCentralWidget(main_widget)
         layout.addLayout(address_layout)
         layout.addWidget(self.web_view)
@@ -404,16 +358,27 @@ class BrowserWindow(QMainWindow):
         current_date = datetime.datetime.now().strftime("%Y-%m-%d")
         self.logger_trace_log(f"Opening URL: {url} - Time: {current_time}, Date: {current_date}", "open_url")
 
+
+
+
+
     def start_gif_search(self):
         self.search_gif_button.setEnabled(False)
         self.stop_gif_button.setEnabled(True)
         self.gif_timer.start(2000)  # Refresh every 2 seconds
-        time.sleep(2)  # Pause de 1 seconde
+
+
+        mouse = Controller()
+
+
+
+
 
     def stop_gif_search(self):
         self.search_gif_button.setEnabled(True)
         self.stop_gif_button.setEnabled(False)
         self.gif_timer.stop()
+
 
     def search_gif(self):
         gif_url = self.gif_url_input.text()
@@ -439,52 +404,28 @@ class BrowserWindow(QMainWindow):
     def handle_gif_search_result(self, gif_found):
         if gif_found:
             self.gif_indicator.setText("GIF Found")
-            if self.audio_file_path:
-                time.sleep(1)
-                self.open_audio_file()
-                self.stop_gif_search()
-            else:
-                self.show_gif_found_message()
+            time.sleep(2)  # Pause de 2 secondes
+            keyboard.press("a")  # Simulation de la pression de la touche "A"
+            keyboard.release("a")  # Relâchement de la touche "A"
+            self.stop_gif_search()
         else:
-            self.gif_indicator.setText("GIF Not Found")
+            self.show_gif_found_message()
+
 
     def show_gif_found_message(self):
-        self.logger_trace_log(f"The GIF has been found !", "show_gif_found_message")
+        time.sleep(0)
 
     def mute_microphone_for_duration(self, duration):
         self.toggle_microphone_mute()
         time.sleep(duration)
         self.toggle_microphone_mute()
-
     def setup_shortcuts(self):
         mute_shortcut = QShortcut(QKeySequence(Qt.Key_0), self)  # Remplacer Qt.Key_M par Qt.Key_0
         mute_shortcut.activated.connect(self.toggle_microphone_mute)
 
-
-
-
-
-
-
-
     def execute_file_4(self):
-        self.logger_trace_log("Action => Occupé", "action_busy")
-
-        self.web_view.page().runJavaScript("""
-                      hangup_customer_button_click('','','','','YES');
-                  """)
-        time.sleep(1)  # Pause de 2 secondes
-        self.web_view.page().runJavaScript("""
-                              DispoSelectContent_create('B','ADD','YES');
-                          """)
-        time.sleep(1)  # Pause de 1 seconde
-        self.web_view.page().runJavaScript("""
-                      DispoSelect_submit('','','YES');
-                  """)
-        self.search_gif_button.setEnabled(False)
-        self.stop_gif_button.setEnabled(True)
-        self.gif_url_input.setText("https://vicibox-001.vicibox.avalon-informatique.fr/agc/images/agc_live_call_ON.gif")
-        self.start_gif_search()
+        keyboard.press("f13")  # Simulation de la pression de la touche "A"
+        keyboard.release("f13")  # Relâchement de la touche "A"
 
 
     def execute_file_9(self):
@@ -492,9 +433,10 @@ class BrowserWindow(QMainWindow):
         if self.last_button_used:
             self.last_button_used.setStyleSheet("")
         self.last_button_used = self.execute_file_button_9
-        self.last_button_used.setStyleSheet("background-color: blue;")
+        self.last_button_used.setStyleSheet("background-color: red;")
         QTimer.singleShot(600, self.start_countdown_9)
-
+        keyboard.press("f9")  # Simulation de la pression de la touche "A"
+        keyboard.release("f9")  # Relâchement de la touche "A"
     def update_countdown_9(self):
         self.remaining_time -= 1
         if self.remaining_time >= 0:
@@ -510,17 +452,16 @@ class BrowserWindow(QMainWindow):
         # Lancer le compte à rebours
         self.countdown_timer = QTimer()
         self.countdown_timer.timeout.connect(self.update_countdown_9)
-        self.remaining_time = 24  # Durée du compte à rebours en secondes
+        self.remaining_time = 33  # Durée du compte à rebours en secondes
         self.update_countdown_9()  # Mettre à jour le label dès le début
         self.countdown_timer.start(1000)  # Mettre à jour le label toutes les secondes
-        keyboard.press("a")  # Simulation de la pression de la touche "A"
-        keyboard.release("a")  # Relâchement de la touche "A"
+
     def execute_file_10(self):
         self.logger_trace_log(f"Action => ER", "execute_file_10")
         if self.last_button_used:
             self.last_button_used.setStyleSheet("")
         self.last_button_used = self.execute_file_button_10
-        self.last_button_used.setStyleSheet("background-color: blue;")
+        self.last_button_used.setStyleSheet("background-color: orange;")
         QTimer.singleShot(600, self.start_countdown_10)
 
     def update_countdown_10(self):
@@ -541,14 +482,14 @@ class BrowserWindow(QMainWindow):
         self.remaining_time = 24  # Durée du compte à rebours en secondes
         self.update_countdown_10()  # Mettre à jour le label dès le début
         self.countdown_timer.start(1000)  # Mettre à jour le label toutes les secondes
-        keyboard.press("b")  # Simulation de la pression de la touche "A"
-        keyboard.release("b")  # Relâchement de la touche "A"
+        keyboard.press("f10")  # Simulation de la pression de la touche "A"
+        keyboard.release("f10")  # Relâchement de la touche "A"
     def execute_file_11(self):
         self.logger_trace_log(f"Action => ER", "execute_file_11")
         if self.last_button_used:
             self.last_button_used.setStyleSheet("")
         self.last_button_used = self.execute_file_button_11
-        self.last_button_used.setStyleSheet("background-color: blue;")
+        self.last_button_used.setStyleSheet("background-color: green;")
         QTimer.singleShot(600, self.start_countdown_11)
 
     def update_countdown_11(self):
@@ -568,8 +509,8 @@ class BrowserWindow(QMainWindow):
         self.remaining_time = 24  # Durée du compte à rebours en secondes
         self.update_countdown_10()  # Mettre à jour le label dès le début
         self.countdown_timer.start(1000)  # Mettre à jour le label toutes les secondes
-        keyboard.press("3")  # Simulation de la pression de la touche "A"
-        keyboard.release("3")  # Relâchement de la touche "A"
+        keyboard.press("f11")  # Simulation de la pression de la touche "A"
+        keyboard.release("f11")  # Relâchement de la touche "A"
 
 
 
@@ -599,8 +540,8 @@ class BrowserWindow(QMainWindow):
         self.remaining_time = 24  # Durée du compte à rebours en secondes
         self.update_countdown_12()  # Mettre à jour le label dès le début
         self.countdown_timer.start(1000)  # Mettre à jour le label toutes les secondes
-        keyboard.press("4")  # Simulation de la pression de la touche "A"
-        keyboard.release("4")  # Relâchement de la touche "A"
+        keyboard.press("f12")  # Simulation de la pression de la touche "A"
+        keyboard.release("f12")  # Relâchement de la touche "A"
 
     def action_next_dial(self):
         self.logger_trace_log("Action => Apple suivant", "action_next_dial")
@@ -609,43 +550,31 @@ class BrowserWindow(QMainWindow):
         """)
 
     def action_busy(self):
-        self.logger_trace_log("Action => Occupé", "action_busy")
+        keyboard.press("f13")  # Simulation de la pression de la touche "A"
+        keyboard.release("f13")  # Relâchement de la touche "A"
 
-        self.web_view.page().runJavaScript("""
-                      hangup_customer_button_click('','','','','YES');
-                  """)
-        time.sleep(1)  # Pause de 2 secondes
-        self.web_view.page().runJavaScript("""
-                              DispoSelectContent_create('B','ADD','YES');
-                          """)
-        time.sleep(1)  # Pause de 1 seconde
-        self.web_view.page().runJavaScript("""
-                      DispoSelect_submit('','','YES');
-                  """)
         self.search_gif_button.setEnabled(False)
         self.stop_gif_button.setEnabled(True)
         self.gif_url_input.setText("https://vicibox-001.vicibox.avalon-informatique.fr/agc/images/agc_live_call_ON.gif")
         self.start_gif_search()
 
     def action_sale(self):
-        self.logger_trace_log("Action => Vente", "action_sale")
-        self.web_view.page().runJavaScript("""
-              hangup_customer_button_click('','','','','YES');
-          """)
-        time.sleep(1)  # Pause de 2 secondes
-        self.web_view.page().runJavaScript("""
-              DispoSelectContent_create('SALE','ADD','YES');
-          """)
-        time.sleep(1)  # Pause de 1 seconde
-        self.web_view.page().runJavaScript("""
-              DispoSelect_submit('','','YES');
-          """)
+        keyboard.press("f15")  # Simulation de la pression de la touche "A"
+        keyboard.release("f15")  # Relâchement de la touche "A"
         self.search_gif_button.setEnabled(False)
         self.stop_gif_button.setEnabled(True)
         self.gif_url_input.setText("https://vicibox-001.vicibox.avalon-informatique.fr/agc/images/agc_live_call_ON.gif")
         self.start_gif_search()
         # Démarrer le compte à rebours après une courte pause
         QTimer.singleShot(600, self.start_countdown)
+    def action_not_interested(self):
+        keyboard.press("f14")  # Simulation de la pression de la touche "A"
+        keyboard.release("f14")  # Relâchement de la touche "A"
+        self.logger_trace_log("Action => Pas intéressé", "action_not_interested")
+        self.search_gif_button.setEnabled(False)
+        self.stop_gif_button.setEnabled(True)
+        self.gif_url_input.setText("https://vicibox-001.vicibox.avalon-informatique.fr/agc/images/agc_live_call_ON.gif")
+        self.start_gif_search()
 
     def browse_audio_file(self):
         file_dialog = QFileDialog()
@@ -663,14 +592,7 @@ class BrowserWindow(QMainWindow):
         if file_path:
             self.logger_trace_log(f"Opening file {file_path}", "open_file")
 
-    def open_audio_file(self):
-        if os.path.exists(self.audio_file_path):
-            try:
-                subprocess.run(['start', self.audio_file_path], shell=True)
-            except Exception as e:
-                self.logger_trace_log(f"Error opening file: {str(e)}", "open_audio_file")
-        else:
-            self.logger_trace_log(f"File not found.", "open_audio_file")
+
 
     def start_listening(self):
         self.voice_label.setText("Listening...")
@@ -724,8 +646,8 @@ class BrowserWindow(QMainWindow):
                         elif action.startswith("key"):
                             key_name = action.split(":")[1].strip()
                             self.press_key(key_name)
-                        elif action.startswith("Présentation"):
-                            self.action_presentation()
+                        elif action.startswith("Presentation"):
+                            self.execute_file_9()
                         elif action.startswith("Bonne chance"):
                             self.action_non_renew()
                         elif action.startswith("Non renouvelable"):
